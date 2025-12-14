@@ -29,6 +29,12 @@ class Config:
     PORT = int(os.getenv('PORT', 5000))
     
     # ==========================================================================
+    # Access Control
+    # ==========================================================================
+    REQUIRE_AUTH = os.getenv('REQUIRE_AUTH', 'true').lower() == 'true'
+    TOKENS_FILE = os.getenv('TOKENS_FILE', './data/tokens.json')
+    
+    # ==========================================================================
     # Claude Settings
     # ==========================================================================
     CLAUDE_MODEL = os.getenv('CLAUDE_MODEL', 'claude-sonnet-4-20250514')

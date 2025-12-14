@@ -11,4 +11,4 @@ sessions_bp = Blueprint('sessions', __name__)
 static_bp = Blueprint('static_routes', __name__)
 
 # Import route handlers to register them
-from app.routes import interview, sessions, static
+from app.routes import auth, interview, sessions, static

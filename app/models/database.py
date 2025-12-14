@@ -60,7 +60,9 @@ def init_db():
             voice_preset TEXT DEFAULT 'premium_female',
             speech_rate REAL DEFAULT 0.95,
             total_chars_synthesized INTEGER DEFAULT 0,
-            estimated_cost REAL DEFAULT 0.0
+            estimated_cost REAL DEFAULT 0.0,
+            token_user_name TEXT,
+            token_user_callsign TEXT
         )
     """)
     
@@ -133,6 +135,14 @@ def _run_migrations(db):
     # Add estimated_cost if missing
     if 'estimated_cost' not in existing_columns:
         cursor.execute("ALTER TABLE sessions ADD COLUMN estimated_cost REAL DEFAULT 0.0")
+    
+    # Add token_user_name if missing
+    if 'token_user_name' not in existing_columns:
+        cursor.execute("ALTER TABLE sessions ADD COLUMN token_user_name TEXT")
+    
+    # Add token_user_callsign if missing
+    if 'token_user_callsign' not in existing_columns:
+        cursor.execute("ALTER TABLE sessions ADD COLUMN token_user_callsign TEXT")
     
     db.commit()
     

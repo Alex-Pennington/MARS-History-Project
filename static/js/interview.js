@@ -631,8 +631,7 @@ class InterviewController {
             
             const data = await response.json();
             
-            this.addMessage('system', `Interview completed! ${data.message_count} exchanges recorded over ${this.formatDuration(data.duration_seconds)}.`);
-            this.addMessage('system', `View transcript: ${data.transcript_url}`);
+            this.addMessage('system', `Interview completed! ${data.message_count} exchanges recorded over ${this.formatDuration(data.duration_seconds)}. Thank you for sharing your knowledge!`);
             
             // Disable all controls
             document.getElementById('startRecordingBtn').disabled = true;

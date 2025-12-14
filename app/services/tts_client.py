@@ -13,26 +13,27 @@ from app.config import Config
 class TTSClient:
     """Client for Google Cloud Text-to-Speech API with voice quality selection."""
     
-    def __init__(self, voice_quality: Optional[str] = None, language_code: Optional[str] = None,
-                 speaking_rate: Optional[float] = None, cache_dir: Optional[str] = None):
+    def __init__(self, voice_preset: str = "premium_female", speech_rate: float = 1.0,
+                 language_code: Optional[str] = None, cache_dir: Optional[str] = None):
         """
         Initialize the TTS client.
         
         Args:
-            voice_quality: 'standard' or 'natural'. Defaults to config value.
+            voice_preset: Voice preset key from Config.VOICE_PRESETS. Defaults to 'premium_female'.
+            speech_rate: Speaking rate multiplier. Defaults to 1.0.
             language_code: Language code. Defaults to config value.
-            speaking_rate: Speaking rate. Defaults to config value.
             cache_dir: Directory for caching audio files.
         """
-        self.voice_quality = voice_quality or Config.DEFAULT_VOICE_QUALITY
-        self.language_code = language_code or Config.TTS_LANGUAGE_CODE
-        self.speaking_rate = speaking_rate or Config.TTS_SPEAKING_RATE
-        self.cache_dir = cache_dir or Config.AUDIO_CACHE_DIR
+        from app.config import Config
         
-        # Get voice name from preset
-        preset = Config.VOICE_PRESETS.get(self.voice_quality, Config.VOICE_PRESETS['natural'])
-        self.voice_name = preset['voice_name']
-        self.cost_per_char = preset['cost_per_char']
+        preset = Config.VOICE_PRESETS.get(voice_preset, Config.VOICE_PRESETS["premium_female"])
+        self.voice_name = preset["name"]
+        self.supports_rate = preset["supports_rate"]
+        self.cost_per_char = preset["cost_per_char"]
+        self.speech_rate = speech_rate if self.supports_rate else None
+        
+        self.language_code = language_code or Config.TTS_LANGUAGE_CODE
+        self.cache_dir = cache_dir or Config.AUDIO_CACHE_DIR
         
         # Initialize client
         self.client = texttospeech.TextToSpeechClient()

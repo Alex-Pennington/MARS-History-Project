@@ -153,6 +153,7 @@ pytest tests/ --cov=app --cov-report=html
 - HTTPS is required for voice input in production (browser security requirement)
 - API keys should never be committed to version control
 - The AI interviewer is configured to redirect away from sensitive topics
+   The sensitive topic redirection is implemented entirely through prompt engineering in the AI's system instructions. The interviewer prompt includes a "Security Boundaries" section that tells Claude to immediately redirect the conversation if topics approach current operational frequencies, classified procedures, cryptographic specifics, or active MARS traffic details. It provides a specific redirect phrase to use: "That sounds operationally sensitive—let's stick to the historical and technical aspects." There's no code-level filtering—it relies on Claude following these instructions in its responses.
 
 ## Browser Support
 

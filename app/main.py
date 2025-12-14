@@ -8,6 +8,7 @@ from flask_cors import CORS
 
 from app.config import Config
 from app.models.database import init_db, close_db
+from app.routes.auth import bp as auth_bp
 from app.routes.interview import interview_bp
 from app.routes.sessions import sessions_bp
 from app.routes.static import static_bp
@@ -36,13 +37,15 @@ def create_app(config_class=Config):
     config_class.ensure_directories()
     
     # Enable CORS for development
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
     
     # Initialize database
     with app.app_context():
         init_db()
     
     # Register blueprints
+    # Auth blueprint handles /, /auth, /interview, /api/auth, /api/logout
+    app.register_blueprint(auth_bp)
     app.register_blueprint(interview_bp)
     app.register_blueprint(sessions_bp)
     app.register_blueprint(static_bp)
@@ -60,6 +63,7 @@ def create_app(config_class=Config):
         print("=" * 60)
         print(f"Environment: {config_class.FLASK_ENV}")
         print(f"Debug Mode: {config_class.DEBUG}")
+        print(f"Auth Required: {config_class.REQUIRE_AUTH}")
         print(f"Database: {config_class.DATABASE_PATH}")
         print(f"Audio Cache: {config_class.AUDIO_CACHE_DIR}")
         print("=" * 60)

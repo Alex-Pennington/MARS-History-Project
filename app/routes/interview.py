@@ -5,6 +5,7 @@ Handles the main interview interaction endpoint.
 
 from flask import Blueprint, request, jsonify
 from app.services.interview_manager import InterviewManager
+from app.routes.auth import require_auth
 
 interview_bp = Blueprint('interview', __name__)
 
@@ -21,6 +22,7 @@ def get_interview_manager() -> InterviewManager:
 
 
 @interview_bp.route('/api/interview', methods=['POST'])
+@require_auth
 def process_interview_input():
     """
     Process expert's spoken input and get interviewer response.
@@ -64,6 +66,7 @@ def process_interview_input():
 
 
 @interview_bp.route('/api/transcript/<session_id>', methods=['GET'])
+@require_auth
 def get_transcript(session_id: str):
     """
     Get full transcript for a session.
@@ -91,6 +94,7 @@ def get_transcript(session_id: str):
 
 
 @interview_bp.route('/api/extraction/<session_id>', methods=['GET'])
+@require_auth
 def get_extraction(session_id: str):
     """
     Get extracted knowledge for a session.

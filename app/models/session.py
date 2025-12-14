@@ -13,7 +13,8 @@ class Session:
     @staticmethod
     def create(db, session_id: str, expert_name: str, 
                expert_callsign: Optional[str] = None, topics: Optional[list] = None,
-               voice_preset: str = 'premium_female', speech_rate: float = 0.95) -> dict:
+               voice_preset: str = 'premium_female', speech_rate: float = 0.95,
+               token_user_name: Optional[str] = None, token_user_callsign: Optional[str] = None) -> dict:
         """
         Create a new interview session.
         
@@ -25,6 +26,8 @@ class Session:
             topics: Optional list of topics
             voice_preset: Voice preset key (e.g., 'premium_female')
             speech_rate: Speaking rate (0.5 to 1.5)
+            token_user_name: Name of authenticated user (interviewer)
+            token_user_callsign: Callsign of authenticated user
         
         Returns:
             Created session dict
@@ -35,9 +38,11 @@ class Session:
         
         cursor.execute("""
             INSERT INTO sessions (id, expert_name, expert_callsign, topics, voice_preset,
-                                  speech_rate, total_chars_synthesized, estimated_cost)
-            VALUES (?, ?, ?, ?, ?, ?, 0, 0.0)
-        """, (session_id, expert_name, expert_callsign, topics_json, voice_preset, speech_rate))
+                                  speech_rate, total_chars_synthesized, estimated_cost,
+                                  token_user_name, token_user_callsign)
+            VALUES (?, ?, ?, ?, ?, ?, 0, 0.0, ?, ?)
+        """, (session_id, expert_name, expert_callsign, topics_json, voice_preset, speech_rate,
+              token_user_name, token_user_callsign))
         
         db.commit()
         

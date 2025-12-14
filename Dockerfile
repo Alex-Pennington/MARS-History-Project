@@ -15,6 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ ./app/
 COPY templates/ ./templates/
 COPY static/ ./static/
+COPY manage_tokens.py .
+COPY export_interviews.py .
 
 # Create data directory
 RUN mkdir -p /app/data/audio_cache /app/data/exports

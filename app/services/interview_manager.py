@@ -52,7 +52,8 @@ class InterviewManager:
     
     def create_session(self, expert_name: str, expert_callsign: Optional[str] = None,
                        topics: Optional[list] = None, voice_preset: str = 'premium_female',
-                       speech_rate: float = 0.95) -> dict:
+                       speech_rate: float = 0.95, token_user_name: Optional[str] = None,
+                       token_user_callsign: Optional[str] = None) -> dict:
         """
         Create a new interview session.
         
@@ -62,6 +63,8 @@ class InterviewManager:
             topics: Optional list of topics to cover
             voice_preset: Voice preset key (e.g., 'premium_female')
             speech_rate: Speaking rate (0.5 to 1.5)
+            token_user_name: Name of authenticated user (interviewer)
+            token_user_callsign: Callsign of authenticated user
         
         Returns:
             Dict with session_id, greeting text, audio_url, and cost info
@@ -80,7 +83,9 @@ class InterviewManager:
             expert_callsign=expert_callsign,
             topics=topics,
             voice_preset=voice_preset,
-            speech_rate=speech_rate
+            speech_rate=speech_rate,
+            token_user_name=token_user_name,
+            token_user_callsign=token_user_callsign
         )
         
         # Generate personalized greeting

@@ -3,10 +3,11 @@ Sessions API routes.
 Handles session creation, listing, and management.
 """
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session as flask_session
 from app.services.interview_manager import InterviewManager
 from app.models.database import get_db
 from app.models.session import Session
+from app.routes.auth import require_auth
 
 sessions_bp = Blueprint('sessions', __name__)
 
@@ -23,6 +24,7 @@ def get_interview_manager() -> InterviewManager:
 
 
 @sessions_bp.route('/api/sessions', methods=['POST'])
+@require_auth
 def create_session():
     """
     Create a new interview session.
@@ -64,6 +66,11 @@ def create_session():
     voice_preset = data.get("voice_preset", "premium_female")
     speech_rate = data.get("speech_rate", 0.95)
     
+    # Get token user info from auth session
+    token_user_name = flask_session.get('user_name')
+    token_user_callsign = flask_session.get('user_callsign')
+    token = flask_session.get('token')
+    
     # Validate voice_preset
     if voice_preset not in Config.VOICE_PRESETS:
         voice_preset = "premium_female"
@@ -82,8 +89,16 @@ def create_session():
             expert_callsign=expert_callsign,
             topics=topics,
             voice_preset=voice_preset,
-            speech_rate=speech_rate
+            speech_rate=speech_rate,
+            token_user_name=token_user_name,
+            token_user_callsign=token_user_callsign
         )
+        
+        # Increment session count for this token
+        if token:
+            from app.services.token_manager import increment_session_count
+            increment_session_count(token)
+        
         return jsonify(result), 201
     
     except Exception as e:
@@ -91,6 +106,7 @@ def create_session():
 
 
 @sessions_bp.route('/api/sessions', methods=['GET'])
+@require_auth
 def list_sessions():
     """
     List all interview sessions.
@@ -138,6 +154,7 @@ def list_sessions():
 
 
 @sessions_bp.route('/api/sessions/<session_id>', methods=['GET'])
+@require_auth
 def get_session(session_id: str):
     """
     Get details of a specific session.
@@ -167,6 +184,7 @@ def get_session(session_id: str):
 
 
 @sessions_bp.route('/api/sessions/<session_id>/end', methods=['POST'])
+@require_auth
 def end_session(session_id: str):
     """
     End an interview session.
@@ -191,6 +209,7 @@ def end_session(session_id: str):
 
 
 @sessions_bp.route('/api/sessions/<session_id>', methods=['DELETE'])
+@require_auth
 def delete_session(session_id: str):
     """
     Delete a session and all its data.
