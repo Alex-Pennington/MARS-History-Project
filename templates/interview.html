@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARS Digital History Project - Interview</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MARS Digital History Project</h1>
+            <p class="subtitle">Knowledge Capture Interview</p>
+        </header>
+        
+        <!-- Session info (hidden until started) -->
+        <div id="sessionInfo" class="session-info hidden">
+            <span id="expertName"></span>
+            <span id="voiceQuality"></span>
+            <span id="sessionCost">$0.0000</span>
+            <span id="messageCount">0 exchanges</span>
+        </div>
+        
+        <!-- Start form (shown initially) -->
+        <div id="startForm" class="start-form">
+            <h2>Begin New Interview</h2>
+            <p class="form-description">
+                Thank you for participating in the MARS Digital History Project. 
+                This interview will capture your valuable knowledge about HF digital communications.
+            </p>
+            <div class="form-group">
+                <label for="expertNameInput">Your Name *</label>
+                <input type="text" id="expertNameInput" placeholder="e.g., Steve Hajducek" required>
+            </div>
+            <div class="form-group">
+                <label for="expertCallsign">Callsign (optional)</label>
+                <input type="text" id="expertCallsign" placeholder="e.g., N2CKH">
+            </div>
+            <div class="form-group">
+                <label for="topicsInput">Topics to Discuss (optional)</label>
+                <input type="text" id="topicsInput" placeholder="e.g., ALE implementation, MS-DMT history">
+                <small>Comma-separated list of topics you'd like to cover</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Voice Quality</label>
+                <div class="voice-tier-selector">
+                    <label class="tier-option">
+                        <input type="radio" name="voiceTier" value="budget" />
+                        <div class="tier-card">
+                            <span class="tier-name">💰 Budget</span>
+                            <span class="tier-desc">Basic synthetic voice</span>
+                            <span class="tier-cost">~$0.15/hour</span>
+                        </div>
+                    </label>
+                    <label class="tier-option">
+                        <input type="radio" name="voiceTier" value="standard" />
+                        <div class="tier-card">
+                            <span class="tier-name">⭐ Standard</span>
+                            <span class="tier-desc">Clear and natural</span>
+                            <span class="tier-cost">~$0.50/hour</span>
+                        </div>
+                    </label>
+                    <label class="tier-option">
+                        <input type="radio" name="voiceTier" value="premium" checked />
+                        <div class="tier-card">
+                            <span class="tier-name">✨ Premium</span>
+                            <span class="tier-desc">Human-like quality</span>
+                            <span class="tier-cost">~$1.00/hour</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Voice Gender</label>
+                <div class="gender-selector">
+                    <label class="gender-option">
+                        <input type="radio" name="voiceGender" value="female" checked />
+                        <span class="gender-label">👩 Female</span>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="voiceGender" value="male" />
+                        <span class="gender-label">👨 Male</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="speechRate">
+                    Speech Rate: <span id="speechRateValue">0.95x</span>
+                    <span id="rateNotSupported" class="rate-warning hidden">(Not available for Premium voices)</span>
+                </label>
+                <input type="range" 
+                       id="speechRate" 
+                       name="speechRate" 
+                       min="0.5" 
+                       max="1.5" 
+                       step="0.05" 
+                       value="0.95"
+                       class="rate-slider" />
+                <div class="rate-labels">
+                    <span>Slower</span>
+                    <span>Normal</span>
+                    <span>Faster</span>
+                </div>
+            </div>
+            
+            <button id="startButton" class="primary-button">Start Interview</button>
+            
+            <div class="browser-notice">
+                <strong>Note:</strong> This interview uses voice recognition. 
+                Please use Chrome or Edge for the best experience.
+            </div>
+        </div>
+        
+        <!-- Chat interface (hidden until started) -->
+        <div id="chatInterface" class="chat-interface hidden">
+            <div id="chatMessages" class="chat-messages">
+                <!-- Messages will be inserted here -->
+            </div>
+            
+            <!-- Push-to-Talk Input Area -->
+            <div class="input-area" id="inputArea">
+                
+                <!-- Transcript display/edit area -->
+                <div class="transcript-container">
+                    <label for="transcriptArea" class="transcript-label">
+                        <span id="transcriptLabel">Your response will appear here...</span>
+                    </label>
+                    <textarea 
+                        id="transcriptArea" 
+                        class="transcript-area"
+                        placeholder="Click 'Start Recording' and speak your response..."
+                        readonly
+                    ></textarea>
+                </div>
+                
+                <!-- Button area - changes based on state -->
+                <div class="button-container" id="buttonContainer">
+                    
+                    <!-- State: IDLE -->
+                    <div class="button-group" id="idleButtons">
+                        <button id="startRecordingBtn" class="big-button record-button">
+                            <span class="button-icon">🎤</span>
+                            <span class="button-text">START RECORDING</span>
+                            <span class="button-hint">Click when ready to speak</span>
+                        </button>
+                    </div>
+                    
+                    <!-- State: RECORDING (hidden by default) -->
+                    <div class="button-group hidden" id="recordingButtons">
+                        <button id="stopRecordingBtn" class="big-button stop-button">
+                            <span class="recording-indicator">
+                                <span class="pulse-dot"></span>
+                                <span class="pulse-dot"></span>
+                                <span class="pulse-dot"></span>
+                            </span>
+                            <span class="button-icon">⏹</span>
+                            <span class="button-text">STOP RECORDING</span>
+                            <span class="button-hint">Recording... <span id="recordingTime">0:00</span></span>
+                        </button>
+                    </div>
+                    
+                    <!-- State: EDITING (hidden by default) -->
+                    <div class="button-group hidden" id="editingButtons">
+                        <button id="recordMoreBtn" class="medium-button secondary-button">
+                            <span class="button-icon">🎤</span>
+                            <span class="button-text">RECORD MORE</span>
+                        </button>
+                        <button id="sendMessageBtn" class="medium-button primary-button">
+                            <span class="button-text">SEND MESSAGE</span>
+                            <span class="button-icon">➤</span>
+                        </button>
+                    </div>
+                    
+                    <!-- State: SENDING (hidden by default) -->
+                    <div class="button-group hidden" id="sendingButtons">
+                        <button class="big-button disabled-button" disabled>
+                            <span class="spinner"></span>
+                            <span class="button-text">Processing...</span>
+                            <span class="button-hint">Claude is thinking...</span>
+                        </button>
+                    </div>
+                    
+                    <!-- State: PLAYING (hidden by default) -->
+                    <div class="button-group hidden" id="playingButtons">
+                        <button id="skipAudioBtn" class="big-button playing-button">
+                            <span class="button-icon">🔊</span>
+                            <span class="button-text">Playing Response...</span>
+                            <span class="button-hint">[Click to skip]</span>
+                        </button>
+                    </div>
+                    
+                </div>
+                
+                <!-- Status bar -->
+                <div class="status-bar" id="statusBar">
+                    <span id="statusIcon">💡</span>
+                    <span id="statusText">Tip: Take your time. Click Stop when you're done talking.</span>
+                </div>
+                
+                <!-- End Interview Button -->
+                <button id="endButton" class="end-interview-button">
+                    End Interview
+                </button>
+                
+            </div>
+        </div>
+        
+        <!-- Audio player (hidden) -->
+        <audio id="audioPlayer" class="hidden"></audio>
+    </div>
+    
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Processing...</p>
+    </div>
+    
+    <script src="/static/js/interview.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+services:
+  interview-system:
+    build: .
+    container_name: sme-interview-system
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data                    # Persist database and audio
+      - ./.env:/app/.env:ro                 # Environment variables
+      - ./app/credentials:/app/credentials:ro  # Google service account
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# For production, add:
+#   nginx:
+#     image: nginx:alpine
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     volumes:
+#       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#       - ./certs:/etc/nginx/certs:ro
+#     depends_on:
+#       - interview-system

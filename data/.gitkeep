@@ -1,0 +1,4 @@
+# This directory stores:
+# - interviews.db (SQLite database)
+# - audio_cache/ (TTS audio files)
+# - exports/ (Exported transcripts and knowledge)

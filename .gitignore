@@ -1,0 +1,129 @@
+# =============================================================================
+# SME Interview System - .gitignore
+# =============================================================================
+
+# =============================================================================
+# SECRETS - NEVER commit these
+# =============================================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Google Cloud credentials
+credentials/*
+!credentials/.gitkeep
+app/credentials/*
+!app/credentials/.gitkeep
+*-credentials.json
+*-service-account.json
+*.json
+!package.json
+!package-lock.json
+
+# =============================================================================
+# Data - Contains interview content and PII
+# =============================================================================
+data/*
+!data/.gitkeep
+*.db
+*.sqlite
+*.sqlite3
+audio_cache/
+exports/
+
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.conda/
+
+# =============================================================================
+# Testing
+# =============================================================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# =============================================================================
+# IDE and Editors
+# =============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+.spyderproject
+.spyproject
+
+# =============================================================================
+# OS Files
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# =============================================================================
+# Logs
+# =============================================================================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =============================================================================
+# Docker
+# =============================================================================
+# Don't ignore docker-compose.yml or Dockerfile - they're needed
+.docker/
+
+# =============================================================================
+# Misc
+# =============================================================================
+*.bak
+*.tmp
+*.temp
+.cache/
